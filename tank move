@@ -1,0 +1,49 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class player : networkbehaviour {
+
+    // 
+    private Rigidbody rd;
+
+    public float movespeed = 8;
+
+     void Awake()
+    {
+        rd=transform.GetComponent<Rigidbody>() //getcomponent 获取组件
+    }
+    private void FixedUpdate()
+    {
+        if (!islocalplayer) return; //对本地角色操作
+        Vector2 movedir;//vector 向量
+        if(Input.GetAxisRaw（“Horizontal”)==0&&Input.GetAxisRaw("vertical")==0)
+        {
+            movedir.x = 0;
+            movedir.y = 0;
+        }
+ //GetAxisRaw不使用平滑滤波器就是说GetAxis可以返回 - 1到1之间的数，比如检测到按键按下的时候，由0不断增加过渡到1GetAxisRaw只能返回 - 1,0,1三个值
+      else
+        {
+            //可以进行移动
+            movedir.x = Input.GetAxis("Horizontal");
+            movedir.y = Input.GetAxis("Vertical")
+       move(movedir);
+            
+        }
+                }
+    void move(Vector2 direction=default(Vector2))
+        {
+        if(direction !=Vector2.zero)
+        {
+            //转方向
+            Transform.rotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.y));//rotation是旋转，lookrotation，从角色往方向点看
+            //计算前方的点
+            Vector3 movementdir = Transform.forward * movespeed * Time.deltaTime;
+            //移动到这个点
+            rd.MovePosition(rd.position + movementdir);
+          
+
+        }
+    }
+}
